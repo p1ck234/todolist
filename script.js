@@ -14,7 +14,6 @@ fetchPromise.then((response) => {
     renderTasks();
   });
 });
-console.log(fetchPromise);
 const renderTasks = () => {
   const tasksHtml = tasks
     .map((task, index) => {
@@ -58,6 +57,19 @@ buttonElement.addEventListener("click", () => {
 
   tasks.push({
     text: textInputElement.value,
+  });
+  const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos", {
+    method: "post",
+    body: JSON.stringify({
+      text: textInputElement.value,
+    }),
+  });
+  fetchPromise.then((response) => {
+    const jsonPromise = response.json();
+    jsonPromise.then((response) => {
+      tasks = response.todos;
+      renderTasks();
+    });
   });
 
   renderTasks();
