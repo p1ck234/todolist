@@ -16,7 +16,7 @@ fetchPromise.then((response) => {
 });
 const renderTasks = () => {
   const tasksHtml = tasks
-    .map((task, index) => {
+    .map((task) => {
       return `
           <li class="task">
             <p class="task-text">
@@ -25,7 +25,9 @@ const renderTasks = () => {
                 .replaceAll("<", "&lt;")
                 .replaceAll(">", "&gt;")
                 .replaceAll('"', "&quot;")}
-              <button data-index="${index}" class="button delete-button">Удалить</button>
+              <button data-id="${
+                task.id
+              }" class="button delete-button">Удалить</button>
             </p>
           </li>`;
     })
@@ -40,9 +42,23 @@ const renderTasks = () => {
       deleteButton.innerHTML = "Задача удаляется...";
 
       setTimeout(() => {
-        const index = deleteButton.dataset.index;
-        tasks.splice(index, 1);
-        renderTasks();
+        // const index = deleteButton.dataset.index;
+        const id = deleteButton.dataset.id;
+        // tasks.splice(index, 1);
+
+        const fetchPromise = fetch(
+          "https://wedev-api.sky.pro/api/todos/" + id,
+          {
+            method: "delete",
+          }
+        );
+        fetchPromise.then((response) => {
+          const jsonPromise = response.json();
+          jsonPromise.then((response) => {
+            tasks = response.todos;
+            renderTasks();
+          });
+        });
       }, 1000);
     });
   }
@@ -55,9 +71,9 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  tasks.push({
-    text: textInputElement.value,
-  });
+  // tasks.push({
+  //   text: textInputElement.value,
+  // });
   const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos", {
     method: "post",
     body: JSON.stringify({
