@@ -39,35 +39,24 @@ const renderTasks = () => {
   const deleteButtons = document.querySelectorAll(".delete-button");
 
   for (const deleteButton of deleteButtons) {
-    deleteButton.addEventListener(
-      "click",
-      (event) => {
-        event.stopPropagation();
-        deleteButton.innerHTML = "Задача удаляется...";
+    deleteButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      deleteButton.innerHTML = "Задача удаляется...";
 
-        setTimeout(() => {
-          // const index = deleteButton.dataset.index;
-          const id = deleteButton.dataset.id;
-          // tasks.splice(index, 1);
+      const id = deleteButton.dataset.id;
 
-          const fetchPromise = fetch(
-            "https://wedev-api.sky.pro/api/todos/" + id,
-            {
-              method: "delete",
-            }
-          );
-          fetchPromise
-            .then((response) => {
-              return response.json();
-            })
-            .then((response) => {
-              tasks = response.todos;
-              renderTasks();
-            });
+      const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos/" + id, {
+        method: "delete",
+      });
+      fetchPromise
+        .then((response) => {
+          return response.json();
+        })
+        .then((response) => {
+          tasks = response.todos;
+          renderTasks();
         });
-      },
-      1000
-    );
+    });
   }
 };
 
