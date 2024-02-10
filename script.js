@@ -79,7 +79,15 @@ buttonElement.addEventListener("click", () => {
   });
   fetchPromise
     .then((response) => {
-      return response.json();
+      if (response.status === 201) {
+        return response.json();
+      }
+      if (response.status === 500) {
+        throw new Error("Сервер сломался");
+      }
+      if (response.status === 400) {
+        throw new Error("Запрос некорректный");
+      }
     })
     .then((response) => {
       fetchAndRenderTasks();
@@ -87,11 +95,20 @@ buttonElement.addEventListener("click", () => {
     .then((date) => {
       buttonElement.disabled = false;
       buttonElement.textContent = "Добавить";
+      textInputElement.value = "";
+    })
+    .catch((error) => {
+      if (error.message === "Сервер сломался") {
+        alert("Сервер сломался");
+        return;
+      }
+      if (error.message === "Запрос некорректный") {
+        alert("Запрос некорректный");
+        return;
+      }
+      alert("Кажется что-то пошло не так!");
     });
-
   renderTasks();
-
-  textInputElement.value = "";
 });
 const pageTitle = document.getElementById("page-title");
 pageTitle.addEventListener("click", () => {
