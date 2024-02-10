@@ -4,17 +4,19 @@ const textInputElement = document.getElementById("text-input");
 
 let tasks = [];
 
-const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos", {
-  method: "get",
-});
-fetchPromise
-  .then((response) => {
-    return response.json();
-  })
-  .then((response) => {
-    tasks = response.todos;
-    renderTasks();
+const fetchAndRenderTasks = () => {
+  const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos", {
+    method: "get",
   });
+  fetchPromise
+    .then((response) => {
+      return response.json();
+    })
+    .then((response) => {
+      tasks = response.todos;
+      renderTasks();
+    });
+};
 
 const renderTasks = () => {
   const tasksHtml = tasks
@@ -59,7 +61,7 @@ const renderTasks = () => {
     });
   }
 };
-
+fetchAndRenderTasks();
 renderTasks();
 
 buttonElement.addEventListener("click", () => {
@@ -80,8 +82,9 @@ buttonElement.addEventListener("click", () => {
       return response.json();
     })
     .then((response) => {
-      tasks = response.todos;
-      renderTasks();
+      fetchAndRenderTasks();
+    })
+    .then((date) => {
       buttonElement.disabled = false;
       buttonElement.textContent = "Добавить";
     });
