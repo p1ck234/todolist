@@ -7,13 +7,15 @@ let tasks = [];
 const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos", {
   method: "get",
 });
-fetchPromise.then((response) => {
-  const jsonPromise = response.json();
-  jsonPromise.then((response) => {
+fetchPromise
+  .then((response) => {
+    return response.json();
+  })
+  .then((response) => {
     tasks = response.todos;
     renderTasks();
   });
-});
+
 const renderTasks = () => {
   const tasksHtml = tasks
     .map((task) => {
@@ -37,30 +39,35 @@ const renderTasks = () => {
   const deleteButtons = document.querySelectorAll(".delete-button");
 
   for (const deleteButton of deleteButtons) {
-    deleteButton.addEventListener("click", (event) => {
-      event.stopPropagation();
-      deleteButton.innerHTML = "Задача удаляется...";
+    deleteButton.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+        deleteButton.innerHTML = "Задача удаляется...";
 
-      setTimeout(() => {
-        // const index = deleteButton.dataset.index;
-        const id = deleteButton.dataset.id;
-        // tasks.splice(index, 1);
+        setTimeout(() => {
+          // const index = deleteButton.dataset.index;
+          const id = deleteButton.dataset.id;
+          // tasks.splice(index, 1);
 
-        const fetchPromise = fetch(
-          "https://wedev-api.sky.pro/api/todos/" + id,
-          {
-            method: "delete",
-          }
-        );
-        fetchPromise.then((response) => {
-          const jsonPromise = response.json();
-          jsonPromise.then((response) => {
-            tasks = response.todos;
-            renderTasks();
-          });
+          const fetchPromise = fetch(
+            "https://wedev-api.sky.pro/api/todos/" + id,
+            {
+              method: "delete",
+            }
+          );
+          fetchPromise
+            .then((response) => {
+              return response.json();
+            })
+            .then((response) => {
+              tasks = response.todos;
+              renderTasks();
+            });
         });
-      }, 1000);
-    });
+      },
+      1000
+    );
   }
 };
 
@@ -80,13 +87,14 @@ buttonElement.addEventListener("click", () => {
       text: textInputElement.value,
     }),
   });
-  fetchPromise.then((response) => {
-    const jsonPromise = response.json();
-    jsonPromise.then((response) => {
+  fetchPromise
+    .then((response) => {
+      return response.json();
+    })
+    .then((response) => {
       tasks = response.todos;
       renderTasks();
     });
-  });
 
   renderTasks();
 
