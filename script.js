@@ -67,9 +67,8 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  // tasks.push({
-  //   text: textInputElement.value,
-  // });
+  buttonElement.disabled = true;
+  buttonElement.textContent = "Задача добавляется...";
   const fetchPromise = fetch("https://wedev-api.sky.pro/api/todos", {
     method: "post",
     body: JSON.stringify({
@@ -83,6 +82,8 @@ buttonElement.addEventListener("click", () => {
     .then((response) => {
       tasks = response.todos;
       renderTasks();
+      buttonElement.disabled = false;
+      buttonElement.textContent = "Добавить";
     });
 
   renderTasks();
